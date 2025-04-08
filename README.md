@@ -35,45 +35,36 @@ Then import and use the chains, contract addresses, and ABIs:
 
 ```typescript
 import { chains, contracts, abis } from "@blessnet/config";
-import { createPublicClient, http, getContract } from 'viem';
 
-// Determine the target chain (e.g., based on environment)
-const targetChain = process.env.NODE_ENV === 'production' ? chains.blessnet : chains.blessnetSepolia;
+const { blessnet } = chains;
+const { accountFactoryV2 } = contracts;
+const { accountFactoryV2Abi } = abis;
 
-// Get the contract address for the target chain
-const factoryAddress = contracts.accountFactoryV2[targetChain.id];
+// Example: add wagmi config to your app
+const wagmiConfig = {
+  chains: [blessnet],
+};
 
-if (!factoryAddress) {
-  throw new Error(`AccountFactoryV2 address not found for chain ID ${targetChain.id}`);
-}
+const Layout = ({children}: {children: React.ReactNode}) => (
+  <WagmiConfig config={wagmiConfig}>
+    {children}
+  </WagmiConfig>
+)
+```
 
-console.log(`Using chain: ${targetChain.name} (ID: ${targetChain.id})`);
-console.log(`Account Factory V2 address: ${factoryAddress}`);
+or
 
-// Example: Create a viem client
-const client = createPublicClient({
-  chain: targetChain,
-  transport: http()
-});
+```typescript
+import { blessnet } from "@blessnet/config/chains";
 
-// Example: Interact with the contract
-async function getImplementation() {
-  const implementationAddress = await client.readContract({
-    address: factoryAddress,
-    abi: abis.accountFactoryV2Abi,
-    functionName: 'getImplementation',
-  });
-  console.log('Implementation Address:', implementationAddress);
-}
+const wagmiConfig = {
+  chains: [blessnet],
+};
 
-getImplementation();
-
-// Example: Using getContract helper
-const accountFactoryContract = getContract({
-  address: factoryAddress,
-  abi: abis.accountFactoryV2Abi,
-  client: client,
-});
-
-// You can now call contract methods directly on accountFactoryContract
-// e.g., const result = await accountFactoryContract.read.getImplementation();
+// Example: add wagmi config to your app
+const Layout = ({children}: {children: React.ReactNode}) => (
+  <WagmiConfig config={wagmiConfig}>
+    {children}
+  </WagmiConfig>
+)
+```
