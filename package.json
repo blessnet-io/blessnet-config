@@ -6,9 +6,15 @@
   "types": "dist/index.d.ts",
   "type": "module",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
+  "exports": {
+    ".": "./dist/index.js",
+    "./chains": "./dist/chains.js",
+    "./contracts": "./dist/contracts.js",
+    "./abis": "./dist/abis.js",
+    "./abis/*": "./dist/abis/*"
+  },
   "scripts": {
     "build": "tsc",
     "prepare": "npm run build",
